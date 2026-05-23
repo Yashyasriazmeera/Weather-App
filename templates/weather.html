@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather – {{ city }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="container">
+    <h1>🌤 Weather Prediction</h1>
+
+    <!-- Back link -->
+    <a class="back-link" href="/">← Search another city</a>
+
+    <!-- Current weather card -->
+    <div class="card current-card">
+      <h2>{{ current.name }}, {{ current.sys.country }}</h2>
+      <div class="weather-main">
+        <img
+          src="https://openweathermap.org/img/wn/{{ current.weather[0].icon }}@2x.png"
+          alt="{{ current.weather[0].description }}"
+        />
+        <span class="temp">{{ current.main.temp | round(1) }}°C</span>
+      </div>
+      <p class="description">{{ current.weather[0].description | capitalize }}</p>
+      <div class="details">
+        <div class="detail">
+          <span class="label">Feels like</span>
+          <span>{{ current.main.feels_like | round(1) }}°C</span>
+        </div>
+        <div class="detail">
+          <span class="label">Humidity</span>
+          <span>{{ current.main.humidity }}%</span>
+        </div>
+        <div class="detail">
+          <span class="label">Wind</span>
+          <span>{{ current.wind.speed }} m/s</span>
+        </div>
+        <div class="detail">
+          <span class="label">Pressure</span>
+          <span>{{ current.main.pressure }} hPa</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5-day forecast -->
+    {% if forecast %}
+    <h2 class="forecast-title">5‑Day Forecast</h2>
+    <div class="forecast-grid">
+      {% for day in forecast %}
+      {% set date = day.dt_txt.split(' ')[0] %}
+      <div class="card forecast-card">
+        <p class="day-label">{{ date }}</p>
+        <img
+          src="https://openweathermap.org/img/wn/{{ day.weather[0].icon }}@2x.png"
+          alt="{{ day.weather[0].description }}"
+        />
+        <p class="forecast-temp">{{ day.main.temp | round(1) }}°C</p>
+        <p class="forecast-desc">{{ day.weather[0].description | capitalize }}</p>
+        <p class="forecast-detail">💧 {{ day.main.humidity }}%</p>
+        <p class="forecast-detail">💨 {{ day.wind.speed }} m/s</p>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>
